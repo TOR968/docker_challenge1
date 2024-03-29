@@ -112,12 +112,16 @@ class DockerCodeChecker(CodeChecker):
     def is_different(self):
         messages = []
         if not self.len_test():
+            started = False
             for i in range(len(self.user_text)):
                 solution_codes = DockerCodeChecker.split_code(self.solution_text)
                 user_codes = DockerCodeChecker.split_code(self.user_text)
                 if '___' in self.user_text[i]:
-                    messages.append(
-                        f"Fill in all '___' gaps in code. An error was found in the line '{self.solution_text[i]}'")
+                    if not started:
+                        messages.append("Fill in all '___' gaps in code.")
+                        started = True
+                    else:
+                        continue
 
                 elif user_codes[i] != solution_codes[i]:
                     messages.append(f"Expected '{self.solution_text[i]}', but got '{self.user_text[i]}'")
